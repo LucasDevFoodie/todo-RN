@@ -1,29 +1,26 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { IconSymbol } from "@/components/ui/IconSymbol";
+import { Tabs } from "expo-router";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    <Tabs>
+      <Tabs.Screen name="index" options={{
+        headerShown: false,
+        title: "HOME",
+        href: null,
+        tabBarIcon: ({color}) => <IconSymbol size={20} name="calendar.and.person" color={color} />
+      }}/>
+      <Tabs.Screen name="ani" options={{
+        title: "ANI",
+        tabBarIcon: ({ color }) => <IconSymbol size={28} name="camera" color={color} />,
+      }}/>
+      <Tabs.Screen name="lucas" options={{
+        title: "LUCAS",
+        tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+      }}/>
+      <Tabs.Screen name="+not-found" options={{
+        href: null,
+      }}/>
+    </Tabs>
+  )
 }
