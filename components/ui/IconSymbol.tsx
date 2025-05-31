@@ -19,7 +19,8 @@ const MAPPING = {
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
   'camera': 'photo-camera',
-  'calendar.and.person': 'today'
+  'calendar.and.person': 'today',
+  'arrow.down': 'arrow-drop-down'
 } as IconMapping;
 
 /**

@@ -31,16 +31,16 @@ export default function Ani() {
 
   useEffect(
     () => {
-      // const fetchData = async() => {
-      //   // const users = await getDoc(userRef)
-      //   if(users.exists())
-      //   {
-      //     alert(users)
-      //   }
-      // }
-
-      // fetchData();
+// alert('carlos')
     }, [])
+
+const handleReset = () => {
+  const emptySchedule = weekDays.reduce((acc, day) => {
+    acc[day] = [];
+    return acc;
+  }, {} as Schedule)
+  setSchedule(emptySchedule);
+};
 
   const handleConfirm = async (date: Date) => {
     if (!selectedDay || !schedule) return;
@@ -79,6 +79,23 @@ export default function Ani() {
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.deleteInstruction}>Hold time to delete</Text>
+         <TouchableOpacity onPress={
+                      () => {
+                        Alert.alert('Reset', `Every record will be deleted`, [
+                          {
+                            text: 'OK',
+                            onPress: () => handleReset(),
+                            style: 'default'
+                          },
+                          {
+                            text: 'CANCEL',
+                            style: 'cancel'
+                          }
+                        ])
+                      }
+                    }>
+                    <Text style={styles.resetInstruction}>Reset</Text>
+                    </TouchableOpacity>
         {weekDays.map((day: Weekday) => {
           return (
             <View style={styles.row} key={day}>
@@ -168,5 +185,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: 'bold',
     alignSelf: 'center'
+  },
+  resetInstruction: {
+    flex: 1,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    color: 'red'
   }
 })

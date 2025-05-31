@@ -33,7 +33,7 @@ const getLastWeekId = (): string => {
   return `week_${year}_${week}`;
 };
 
-export default function ScheduleEditor() {
+export default function lucas() {
   const userId = 'LUCAS';
   const weekId = getLastWeekId();
   const [schedule, setSchedule] = useState<Schedule>({} as Schedule);
