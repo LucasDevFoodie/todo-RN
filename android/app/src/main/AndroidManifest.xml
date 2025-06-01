@@ -25,7 +25,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="todo"/>
-        <data android:scheme="exp+todo"/>
+        <data android:scheme="exp+todo-app"/>
       </intent-filter>
     </activity>
   </application>

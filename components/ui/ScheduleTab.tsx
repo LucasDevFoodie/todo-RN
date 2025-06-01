@@ -1,10 +1,10 @@
 
-import { useEffect, useMemo, useState } from 'react';
-import { Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Alert, Platform, ScrollView, StyleSheet, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { db, updateSchedule } from '@/firebase'
 import { useFirestoreDocument } from '@/hooks/useFirestoreCollection';
-
+import TextCustom from '@/components/ui/TextCustom'
 type Weekday = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 type Schedule = Record<Weekday, string[]>;
 
@@ -75,82 +75,84 @@ export function ScheduleTab(user: string) {
 
   }
 
-  return (
-
-    loading ?
+  if (loading) {
+    return (
       <View style={styles.loading}>
-        <ActivityIndicator size="large" color='green' />
+        <ActivityIndicator size="large" color="green" />
       </View>
-      :
-      <ScrollView>
-        <View style={styles.container}>
-          <Text style={styles.deleteInstruction}>Hold time to delete</Text>
-          <TouchableOpacity onPress={
-            () => {
-              Alert.alert('Reset', `Every record will be deleted`, [
-                {
-                  text: 'OK',
-                  onPress: () => handleReset(),
-                  style: 'default'
-                },
-                {
-                  text: 'CANCEL',
-                  style: 'cancel'
-                }
-              ])
-            }
-          }>
-            <Text style={styles.resetInstruction}>Reset</Text>
-          </TouchableOpacity>
-          {weekDays.map((day: Weekday) => {
-            return (
-              <View style={styles.row} key={day}>
-                <Text style={styles.textDay}>{day}</Text>
-                <TouchableOpacity onPress={() => {
-                  setSelectedDay(day);
-                  setPickerVisible(true);
-                }}>
-                  <Text style={styles.addButton}>+ Add</Text>
-                </TouchableOpacity>
-                <View style={styles.timeColumn}>
-                  {schedule && schedule[day]?.map((time, index) => {
-                    return (
-                      <TouchableOpacity key={day + time + index} onLongPress={
-                        () => {
-                          Alert.alert('Delete', `${time} from ${day} will be deleted.`, [
-                            {
-                              text: 'OK',
-                              onPress: () => handleDelete(index, day),
-                              style: 'default'
-                            },
-                            {
-                              text: 'CANCEL',
-                              style: 'cancel'
-                            }
-                          ])
-                        }
-                      }>
-                        <Text style={styles.timeCell}>{time}</Text>
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
+    );
+  }
+
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <TextCustom style={styles.deleteInstruction}>Hold time to delete</TextCustom>
+        <TouchableOpacity onPress={
+          () => {
+            Alert.alert('Reset', `Every record will be deleted`, [
+              {
+                text: 'OK',
+                onPress: () => handleReset(),
+                style: 'default'
+              },
+              {
+                text: 'CANCEL',
+                style: 'cancel'
+              }
+            ])
+          }
+        }>
+          <TextCustom style={styles.resetInstruction}>Reset</TextCustom>
+        </TouchableOpacity>
+        {weekDays.map((day: Weekday) => {
+          return (
+            <View style={styles.row} key={day}>
+              <TextCustom style={styles.textDay}>{day}</TextCustom>
+              <TouchableOpacity onPress={() => {
+                setSelectedDay(day);
+                setPickerVisible(true);
+              }}>
+                <TextCustom style={styles.addButton}>+ Add</TextCustom>
+              </TouchableOpacity>
+              <View style={styles.timeColumn}>
+                {schedule && schedule[day]?.map((time, index) => {
+                  return (
+                    <TouchableOpacity key={day + time + index} onLongPress={
+                      () => {
+                        Alert.alert('Delete', `${time} from ${day} will be deleted.`, [
+                          {
+                            text: 'OK',
+                            onPress: () => handleDelete(index, day),
+                            style: 'default'
+                          },
+                          {
+                            text: 'CANCEL',
+                            style: 'cancel'
+                          }
+                        ])
+                      }
+                    }>
+                      <TextCustom style={styles.timeCell}>{time}</TextCustom>
+                    </TouchableOpacity>
+                  )
+                })}
               </View>
-            );
-          })}
-          <DateTimePickerModal
-            isVisible={isPickerVisible}
-            mode='time'
-            onConfirm={handleConfirm}
-            onCancel={() => {
-              setPickerVisible(false);
-              setIsEndTime(false);
-            }}
-            is24Hour={true}
-            display={Platform.OS == 'ios' ? 'spinner' : 'clock'}
-          ></DateTimePickerModal>
-        </View>
-      </ScrollView>
+            </View>
+          );
+        })}
+        <DateTimePickerModal
+          isVisible={isPickerVisible}
+          mode='time'
+          onConfirm={handleConfirm}
+          onCancel={() => {
+            setPickerVisible(false);
+            setIsEndTime(false);
+          }}
+          is24Hour={true}
+          display={Platform.OS == 'ios' ? 'spinner' : 'clock'}
+        ></DateTimePickerModal>
+      </View>
+    </ScrollView>
 
   )
 }
