@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "todo",
-    "slug": "todo",
+    "slug": "todo-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/todo.png",
@@ -38,6 +38,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2a03c9a4-f793-40c5-9db9-c1bc04044ca9"
+      }
+    },
+    "owner": "lukesky12"
   }
 }
