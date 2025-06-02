@@ -34,6 +34,24 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      ["expo-font",
+        {
+          "fonts": ["./assets/fonts/Roboto-Regular.ttf"],
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "Roboto-Regular",
+                "fontDefinitions": [
+                  {
+                    "path": "./assets/fonts/Roboto-Regular.ttf",
+                    "weight": 800
+                  }
+                ]
+              }
+            ]
+          }
+        }
       ]
     ],
     "experiments": {

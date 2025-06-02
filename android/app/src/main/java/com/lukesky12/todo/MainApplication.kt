@@ -1,4 +1,5 @@
 package com.lukesky12.todo
+import com.facebook.react.common.assets.ReactFontManager
 
 import android.app.Application
 import android.content.res.Configuration
@@ -42,6 +43,9 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
+    // @generated begin xml-fonts-init - expo prebuild (DO NOT MODIFY) sync-5e9994df7b19b3377a0ed30a6938cf0a1f98a2c7
+    ReactFontManager.getInstance().addCustomFont(this, "Roboto-Regular", R.font.xml_roboto_regular)
+    // @generated end xml-fonts-init
     SoLoader.init(this, OpenSourceMergedSoMapping)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.

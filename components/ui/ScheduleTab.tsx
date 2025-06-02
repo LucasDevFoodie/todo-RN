@@ -4,17 +4,16 @@ import { Alert, Platform, ScrollView, StyleSheet, TouchableOpacity, View, Activi
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { db, updateSchedule } from '@/firebase'
 import { useFirestoreDocument } from '@/hooks/useFirestoreCollection';
-import TextCustom from '@/components/ui/TextCustom'
+import { TextCustom } from '@/components/ui/TextCustom'
 type Weekday = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 type Schedule = Record<Weekday, string[]>;
 
-const _user = 'ani';
 const weekDays: Weekday[] = [
   'Monday', 'Tuesday', 'Wednesday',
   'Thursday', 'Friday', 'Saturday', 'Sunday',
 ];
 
-export function ScheduleTab(user: string) {
+export function ScheduleTab({ user, isEditable = true }: { user: string, isEditable?: boolean }) {
   const [selectedDay, setSelectedDay] = useState<Weekday | null>(null);
   const [isPickerVisible, setPickerVisible] = useState(false);
   const [schedule, setSchedule] = useState<Schedule | null>()
@@ -26,7 +25,6 @@ export function ScheduleTab(user: string) {
   useEffect(
     () => {
       if (data) {
-        console.log(loading)
         setSchedule(data);
       }
     }, [data])
@@ -84,74 +82,79 @@ export function ScheduleTab(user: string) {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <TextCustom style={styles.deleteInstruction}>Hold time to delete</TextCustom>
-        <TouchableOpacity onPress={
-          () => {
-            Alert.alert('Reset', `Every record will be deleted`, [
-              {
-                text: 'OK',
-                onPress: () => handleReset(),
-                style: 'default'
-              },
-              {
-                text: 'CANCEL',
-                style: 'cancel'
-              }
-            ])
-          }
-        }>
-          <TextCustom style={styles.resetInstruction}>Reset</TextCustom>
-        </TouchableOpacity>
-        {weekDays.map((day: Weekday) => {
-          return (
-            <View style={styles.row} key={day}>
-              <TextCustom style={styles.textDay}>{day}</TextCustom>
-              <TouchableOpacity onPress={() => {
-                setSelectedDay(day);
-                setPickerVisible(true);
-              }}>
-                <TextCustom style={styles.addButton}>+ Add</TextCustom>
-              </TouchableOpacity>
-              <View style={styles.timeColumn}>
-                {schedule && schedule[day]?.map((time, index) => {
-                  return (
-                    <TouchableOpacity key={day + time + index} onLongPress={
-                      () => {
-                        Alert.alert('Delete', `${time} from ${day} will be deleted.`, [
-                          {
-                            text: 'OK',
-                            onPress: () => handleDelete(index, day),
-                            style: 'default'
-                          },
-                          {
-                            text: 'CANCEL',
-                            style: 'cancel'
-                          }
-                        ])
-                      }
-                    }>
-                      <TextCustom style={styles.timeCell}>{time}</TextCustom>
-                    </TouchableOpacity>
-                  )
-                })}
-              </View>
+    <ScrollView style={styles.container}>
+      {
+        isEditable && <View>
+          <TextCustom style={styles.deleteInstruction}>Hold time to delete</TextCustom>
+          <TouchableOpacity onPress={
+            () => {
+              Alert.alert('Reset', `Every record will be deleted`, [
+                {
+                  text: 'OK',
+                  onPress: () => handleReset(),
+                  style: 'default'
+                },
+                {
+                  text: 'CANCEL',
+                  style: 'cancel'
+                }
+              ])
+            }
+          }>
+            <TextCustom style={styles.resetInstruction}>Reset</TextCustom>
+
+          </TouchableOpacity>
+        </View>
+      }
+      {weekDays.map((day: Weekday) => {
+        return (
+          <View style={styles.row} key={day}>
+            <TextCustom style={styles.textDay}>{day}</TextCustom>
+            {isEditable && <TouchableOpacity onPress={() => {
+              setSelectedDay(day);
+              setPickerVisible(true);
+            }}>
+              <TextCustom style={styles.addButton}>+ Add</TextCustom>
+            </TouchableOpacity>
+            }
+            <View style={styles.timeColumn}>
+              {schedule && schedule[day]?.map((time, index) => {
+                return (
+                  <TouchableOpacity key={day + time + index} onLongPress={
+                    () => {
+                      Alert.alert('Delete', `${time} from ${day} will be deleted.`, [
+                        {
+                          text: 'OK',
+                          onPress: () => handleDelete(index, day),
+                          style: 'default'
+                        },
+                        {
+                          text: 'CANCEL',
+                          style: 'cancel'
+                        }
+                      ])
+                    }
+                  }>
+                    <TextCustom style={styles.timeCell}>{time}</TextCustom>
+                  </TouchableOpacity>
+                )
+              })}
             </View>
-          );
-        })}
-        <DateTimePickerModal
-          isVisible={isPickerVisible}
-          mode='time'
-          onConfirm={handleConfirm}
-          onCancel={() => {
-            setPickerVisible(false);
-            setIsEndTime(false);
-          }}
-          is24Hour={true}
-          display={Platform.OS == 'ios' ? 'spinner' : 'clock'}
-        ></DateTimePickerModal>
-      </View>
+          </View>
+        );
+      })}
+      <DateTimePickerModal
+        isVisible={isPickerVisible}
+        mode='time'
+        onConfirm={handleConfirm}
+        onCancel={() => {
+          setPickerVisible(false);
+          setIsEndTime(false);
+        }}
+        is24Hour={true}
+        display={Platform.OS == 'ios' ? 'spinner' : 'clock'}
+      ></DateTimePickerModal>
+
     </ScrollView>
 
   )
@@ -160,24 +163,22 @@ export function ScheduleTab(user: string) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
     margin: 4,
     padding: 4,
     borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: 'green'
+    borderWidth: 2,
+    borderColor: 'green',
+    borderRadius: 6
   },
   row: {
     flex: 1,
     justifyContent: 'flex-start',
-    borderBottomWidth: 2,
-    borderBottomLeftRadius: 8,
-    borderColor: 'green'
+    borderBottomWidth: 1,
+    borderColor: 'grey'
   },
   textDay: {
     fontWeight: 'bold',
-    fontSize: 18
+    fontSize: 18,
   },
   timeColumn: {
     flex: 1,
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   addButton: {
-    color: '#007bff'
+    color: 'grey'
   },
   deleteInstruction: {
     flex: 1,
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: 'bold',
     alignSelf: 'center',
-    color: 'red'
+    color: '#DDA853'
   },
   loading: {
     flex: 1,
